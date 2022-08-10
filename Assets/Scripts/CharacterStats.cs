@@ -5,7 +5,7 @@ using TMPro;
 
 public class CharacterStats : MonoBehaviour
 {
-    [SerializeField] protected int health;
+    [SerializeField] protected float health;
     [SerializeField] protected int maxHealth;
 
     [SerializeField] protected bool isDead;
@@ -39,23 +39,23 @@ public class CharacterStats : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void SetHealthTo(int healthSetTo)
+    public void SetHealthTo(float healthSetTo)
     {
         health = healthSetTo;
         CheckHealth();
 
     }
 
-    public virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(float damage)
     {
-        int healtAfterDamage = health - damage;
+        float healtAfterDamage = health - damage;
         SetHealthTo(healtAfterDamage);
         
     }
 
-    public void Heal(int heal)
+    public void Heal(float heal)
     {
-        int healthAfterHeal = health + heal;
+        float healthAfterHeal = health + heal;
         SetHealthTo(healthAfterHeal);
     }
 

@@ -1,10 +1,11 @@
-
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Damageable : MonoBehaviour
+public class ZombieHP : MonoBehaviour
 {
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float currentHealth;
+    [SerializeField] float maxHealth = 70f;
+    float currentHealth;
 
     [SerializeField] GameObject hitEffect;
 
@@ -23,7 +24,7 @@ public class Damageable : MonoBehaviour
             Die();
         }
     }
-    
+
     void Die()
     {
         print(name + "was destroyed");

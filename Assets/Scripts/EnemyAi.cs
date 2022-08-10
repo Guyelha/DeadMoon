@@ -7,6 +7,8 @@ public class EnemyAi : MonoBehaviour
 {
    public NavMeshAgent agent =null;
 
+    public GameObject hitEffect;
+
    public Transform player;
 
     public LayerMask whatIsGround, whatIsPlayer;
@@ -14,6 +16,8 @@ public class EnemyAi : MonoBehaviour
     private Animator animator = null;
 
     private ZombieStats stats = null;
+
+   
 
     //Patroling
     public Vector3 walkPoint;
@@ -24,8 +28,9 @@ public class EnemyAi : MonoBehaviour
 
     //Attacking
     private float timeOfLastAttack = 0;
-    public float timeBetweenAttacks = 1.5f;
+    public float timeBetweenAttacks = 4f;
     bool alreadyAttacked;
+    [SerializeField] private float damage;
    
 
     //States
@@ -34,6 +39,7 @@ public class EnemyAi : MonoBehaviour
 
     private void Awake()
     {
+        
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
@@ -63,14 +69,16 @@ public class EnemyAi : MonoBehaviour
         if (playerInAttackRange && playerInSightRange)
         {
             animator.SetBool("Attack", true);
-
-            timeBetweenAttacks = Time.time;
-            CharacterStats playerStats = player.GetComponent<CharacterStats>();
-            AttackPlayer(playerStats);
-            agent.acceleration = 1;
+            if(Time.time - timeOfLastAttack >= timeBetweenAttacks)
+            {
+                timeOfLastAttack = Time.time;
+                player.GetComponent<PlayerHP>().TakeDamage(damage);
+            }
             
 
-            
+                  
+            AttackPlayer();
+            agent.acceleration = 1;  
 
         }
        
@@ -117,15 +125,13 @@ public class EnemyAi : MonoBehaviour
         
     }
 
-    private void AttackPlayer(CharacterStats statsToDmage)
+    private void AttackPlayer()
     {
-        transform.LookAt(player);
-        stats.DealDamage(statsToDmage);
         //Make sure enemy dosent move
         agent.SetDestination(transform.position);
+        transform.LookAt(player);
 
-        
-
+         
         if(!alreadyAttacked)
         {
             alreadyAttacked = true;
@@ -138,4 +144,6 @@ public class EnemyAi : MonoBehaviour
     {
         alreadyAttacked=false;
     }
+
+ 
 }

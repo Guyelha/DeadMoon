@@ -12,12 +12,15 @@ public class MenuManager : MonoBehaviour
     public bool settingsButton;
     public GameObject playHolder;
     public GameObject Store;
+    public GameObject restartMenu;
+    private bool isDead;
    
    
-    void Start()
+   private void Awake()
     {
     //   settingsCanvas.SetActive(false);
         settingsButton = false;
+       // restartMenu.SetActive(false);
 
         
     }
@@ -27,6 +30,7 @@ public class MenuManager : MonoBehaviour
     public void PlayButton()
     {
         SceneManager.LoadScene("Level1");
+        Cursor.visible = false;
     }
 
     public void SettingsButton()
@@ -44,6 +48,14 @@ public class MenuManager : MonoBehaviour
         Application.Quit();
         Debug.Log("quiting");
     }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+    }
+
+
     public void PlayHolderOff()
     {
      //   playHolder.SetActive(false);
