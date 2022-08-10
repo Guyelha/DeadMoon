@@ -9,7 +9,7 @@ public class Gun : MonoBehaviour
     [SerializeField] bool rapidFire = false;
 
     [SerializeField] float range = 50f;
-    [SerializeField] float damage = 10f;
+    [SerializeField] int damage = 10;
     [SerializeField] float fireRate = 5f;
 
     WaitForSeconds rapidFireWait;
@@ -51,6 +51,7 @@ public class Gun : MonoBehaviour
             if (hit.collider.GetComponent<Damageable>() != null)
             {
                 hit.collider.GetComponent<Damageable>().TakeDamage(damage, hit.point, hit.normal);
+                
             }
                 
         }

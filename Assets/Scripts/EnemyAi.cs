@@ -5,13 +5,15 @@ using UnityEngine.AI;
 
 public class EnemyAi : MonoBehaviour
 {
-   public NavMeshAgent agent;
+   public NavMeshAgent agent =null;
 
    public Transform player;
 
     public LayerMask whatIsGround, whatIsPlayer;
 
-    private Animator animator;
+    private Animator animator = null;
+
+    private ZombieStats stats = null;
 
     //Patroling
     public Vector3 walkPoint;
@@ -21,8 +23,10 @@ public class EnemyAi : MonoBehaviour
     public float chaseSpeed = 5f;
 
     //Attacking
-    public float timeBetweenAttacks;
+    private float timeOfLastAttack = 0;
+    public float timeBetweenAttacks = 1.5f;
     bool alreadyAttacked;
+   
 
     //States
     public float sightRange, attackRange;
@@ -33,6 +37,7 @@ public class EnemyAi : MonoBehaviour
         player = GameObject.Find("Player").transform;
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        stats = GetComponent<ZombieStats>();
     }
 
     private void Update()
@@ -57,10 +62,18 @@ public class EnemyAi : MonoBehaviour
         }
         if (playerInAttackRange && playerInSightRange)
         {
-            AttackPlayer();
             animator.SetBool("Attack", true);
+
+            timeBetweenAttacks = Time.time;
+            CharacterStats playerStats = player.GetComponent<CharacterStats>();
+            AttackPlayer(playerStats);
             agent.acceleration = 1;
+            
+
+            
+
         }
+       
 
         if (!playerInAttackRange && playerInSightRange)
         {
@@ -101,14 +114,17 @@ public class EnemyAi : MonoBehaviour
     {
         agent.SetDestination(player.position);
         transform.LookAt(player);
+        
     }
 
-    private void AttackPlayer()
+    private void AttackPlayer(CharacterStats statsToDmage)
     {
+        transform.LookAt(player);
+        stats.DealDamage(statsToDmage);
         //Make sure enemy dosent move
         agent.SetDestination(transform.position);
 
-        transform.LookAt(player);
+        
 
         if(!alreadyAttacked)
         {

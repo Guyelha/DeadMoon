@@ -4,5 +4,16 @@ using UnityEngine;
 
 public class PlayerStats : CharacterStats
 {
-   
+    private void Start()
+    {
+        InitVariables();
+
+    }
+
+    public override void CheckHealth()
+    {
+        base.CheckHealth();
+    }
+
+
 }

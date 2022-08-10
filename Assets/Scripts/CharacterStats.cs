@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CharacterStats : MonoBehaviour
 {
@@ -9,13 +10,15 @@ public class CharacterStats : MonoBehaviour
 
     [SerializeField] protected bool isDead;
 
+    
+
 
     private void Start()
     {
         InitVariables();
     }
 
-    public void CheckHealth()
+    public virtual void CheckHealth()
     {
         if(health <= 0)
         {
@@ -30,9 +33,10 @@ public class CharacterStats : MonoBehaviour
         }
     }
 
-    public void Die()
+    public virtual void Die()
     {
         isDead = true;
+        Destroy(gameObject);
     }
 
     public void SetHealthTo(int healthSetTo)
@@ -42,10 +46,11 @@ public class CharacterStats : MonoBehaviour
 
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         int healtAfterDamage = health - damage;
         SetHealthTo(healtAfterDamage);
+        
     }
 
     public void Heal(int heal)
@@ -54,7 +59,7 @@ public class CharacterStats : MonoBehaviour
         SetHealthTo(healthAfterHeal);
     }
 
-    public void InitVariables()
+    public virtual void InitVariables()
     {
         maxHealth = 100;
         SetHealthTo(maxHealth);
