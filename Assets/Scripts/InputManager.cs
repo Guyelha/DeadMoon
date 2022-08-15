@@ -34,6 +34,7 @@ public class InputManager : MonoBehaviour
         onFoot.Jump.performed += ctx => movement.Jump();
         onFoot.Crouch.performed += ctx => movement.Crouch();
         onFoot.StartSprint.performed += e => movement.StartSprinting();
+        onFoot.StartSprint.canceled += e => movement.StopSprinting();
         
         onFoot.Shoot.started += _ => StartFiring();
         onFoot.Shoot.canceled += _ => StopFiring();

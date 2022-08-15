@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;
     private Vector3 playerVelocity;
     public float speed = 7f;
+    public float crouchSpeed;
     private bool isGrounded;
     public float gravity = -9.8f;
     public float jumpHeight = 3f;
@@ -29,9 +30,17 @@ public class PlayerMovement : MonoBehaviour
             float p = crouchTimer / 1;
             p *= p;
             if (crouching)
+            {
                 controller.height = Mathf.Lerp(controller.height, 1, p);
+                speed = crouchSpeed;
+            }
+
             else
+            {
                 controller.height = Mathf.Lerp(controller.height, 2, p);
+                speed = 7f;
+            }
+                
 
             if (p > 1)
             {
