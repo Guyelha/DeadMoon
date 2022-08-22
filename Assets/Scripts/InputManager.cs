@@ -17,7 +17,15 @@ public class InputManager : MonoBehaviour
     public GameObject rifleGameOject;
     public GameObject crossHair;
 
-    public bool isAiming;
+    //Aiming and Zoom
+    [SerializeField] private bool isAiming;
+    [SerializeField] private bool canZoom;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private float timeToZoom = 0.3f;
+    [SerializeField] private float zoomFOV = 45f;
+    private float deafultFOV;
+    private Coroutine zoomRoutine;
+
     
 
     Coroutine fireCoroutine;
@@ -26,6 +34,8 @@ public class InputManager : MonoBehaviour
 
     void Awake()
     {
+        playerCamera = GetComponentInChildren<Camera>();
+        deafultFOV = playerCamera.fieldOfView;
          
         playerInput = new PlayerInput();
         onFoot = playerInput.OnFoot;
@@ -41,18 +51,12 @@ public class InputManager : MonoBehaviour
         onFoot.Aim.performed += e => AimingPressed();
         onFoot.ReleaseAim.performed += e => AimingReleased();
 
-        
-
-
-
     }
 
     
     void FixedUpdate()
     {
         movement.ProcessMove(onFoot.Movement.ReadValue<Vector2>());
-        
-
     }
 
     void StartFiring()
@@ -73,14 +77,42 @@ public class InputManager : MonoBehaviour
         isAiming = true;
         crossHair.SetActive(false);
         gun.GetComponent<Animator>().Play("ADS");
-
+        if(zoomRoutine != null)
+        {
+            StopCoroutine(zoomRoutine);
+            zoomRoutine = null;
+        }
+        zoomRoutine = StartCoroutine(ToggleZoom(true));
     }
 
     private void AimingReleased()
     {
         isAiming= false;
         crossHair.SetActive(true);
-        gun.GetComponent<Animator>().Play("New State");
+        gun.GetComponent<Animator>().Play("Stop_ADS");
+        if (zoomRoutine != null)
+        {
+            StopCoroutine(zoomRoutine);
+            zoomRoutine = null;
+        }
+        zoomRoutine = StartCoroutine(ToggleZoom(false));
+    }
+
+    private IEnumerator ToggleZoom(bool isEnter)
+    {
+        float targetFOV = isEnter ? zoomFOV : deafultFOV;
+        float startingFOV = playerCamera.fieldOfView;
+        float timeElapsed = 0;
+
+        while (timeElapsed < timeToZoom)
+        {
+            playerCamera.fieldOfView = Mathf.Lerp(startingFOV, targetFOV, timeElapsed / timeToZoom );
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        playerCamera.fieldOfView = targetFOV;
+        zoomRoutine = null;
     }
 
     
